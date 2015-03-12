@@ -50,7 +50,8 @@ Tell me about the language
 * Any value can be used as a table key, but ints and symbols are special:
   they get their own syntax in table literals (`([1] = :x, [:q] = 7)` is the
   same as `(:x, q = 7)`), and value access (`a[:foo]` is the same as `a.foo`,
-  and `a[1]` is the same as `a.$1`, and they are used to access the environment: `foo` for the key `:foo` and `$1` for the key `1`.
+  and `a[1]` is the same as `a.$1`, and they are used to access the
+  environment: `foo` for the key `:foo` and `$1` for the key `1`.
 * Non-positive integer names are special: `$0` is the current function, `$-1`
   is the current environment, `$-2` is the environment of the directly
   enclosing function, `$-3` the environment of the function enclosing that
