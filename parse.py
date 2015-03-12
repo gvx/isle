@@ -34,7 +34,7 @@ FuncDef.setParseAction(lambda t: ast.Do(t.asList()))
 Body = Suppress(OneOrMore('\n')) + Stmts + Suppress(OneOrMore('\n'))
 Body.setParseAction(lambda t: [t.asList()])
 
-ForLoop = Keyword("for") + delimitedList(Name).setParseAction(lambda t:[x.value for x in t.asList()]) + Keyword("in") + Exp + Body + Keyword("end")
+ForLoop = Keyword("for") + delimitedList(Name).setParseAction(lambda t:[[x.value for x in t.asList()]]) + Keyword("in") + Exp + Body + Keyword("end")
 ForLoop.setParseAction(lambda t: ast.For(t[1], t[3], t[4]))
 
 IfExp = Keyword("if") + Exp + Body + ZeroOrMore(Keyword("elsif") + Exp + Body) + Optional(Keyword("else") + Body) + Keyword('end')
