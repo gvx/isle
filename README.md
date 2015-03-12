@@ -67,4 +67,5 @@ Tell me about the language
   `show()`.
 * Supported string escapes are `\\`, `\n`, `\r`, `\t`, `\"` and finally
   `\hexdigits;` for Unicode code points. All other appearances of `\` will
-  stripped from the string.
+  stripped from the string (this means you can use `\{` and `\}` as literal
+  braces without invoking string interpolation).
