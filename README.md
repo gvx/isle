@@ -37,7 +37,7 @@ Tell me about the language
   useful if the symbol isn't a valid identifier, like `:'+'`.
 * Tables: `("one", "two", three="four", ["five"]="six")`. This is pretty
   much exactly taken from how tables work in Lua. Kind of like a
-  combinination of Python's list and dict.
+  combination of Python's list and dict.
 
 ### Fun facts
 * All functions take one argument, which is a table literal, and return a
