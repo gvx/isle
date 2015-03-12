@@ -322,7 +322,3 @@ def invoke(body, args):
             sc.pc += 1
     except Exception as e:
         traceback.print_exc()
-        print('stack:')
-        print(stack)
-        print('callstack:')
-        print(callstack)
