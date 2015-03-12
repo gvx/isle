@@ -12,10 +12,7 @@ def isle_puts(stack, callstack, arg):
         n += 1
 
 def isle_show(stack, callstack, arg):
-    n = 1
-    while n in arg:
-        print(arepr(arg[n]))
-        n += 1
+    print(', '.join(arepr(x) for x in _iter_args(arg)))
 
 def isle_assert(stack, callstack, arg):
     assert arg[1] is not None
