@@ -65,7 +65,6 @@ Tell me about the language
   No formatting options are available, strings will be inserted as-is and
   other values are inserted equivalent to how they would be show with
   `show()`.
-* Supported string escapes are `\\`, `\n`, `\r`, `\t`, `\"` and finally
-  `\hexdigits;` for Unicode code points. All other appearances of `\` will
-  stripped from the string (this means you can use `\{` and `\}` as literal
-  braces without invoking string interpolation).
+* Supported string escapes are `\\`, `\n`, `\r`, `\t`, `\"`, `\{`, `\}` and
+  finally `\hexdigits;` for Unicode code points. All other appearances of `\`
+  in string literals are illegal.
