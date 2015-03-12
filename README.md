@@ -61,3 +61,10 @@ Tell me about the language
   used to simulate classes.
 * `'()'` is similar to `__call__` and `__call` in Python and Lua
   respectively.
+* String interpolation is really useful: `lie = "I am {myage() - 7} y/o"`.
+  No formatting options are available, strings will be inserted as-is and
+  other values are inserted equivalent to how they would be show with
+  `show()`.
+* Supported string escapes are `\\`, `\n`, `\r`, `\t`, `\"` and finally
+  `\hexdigits;` for Unicode code points. All other appearances of `\` will
+  stripped from the string.
