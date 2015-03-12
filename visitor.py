@@ -23,17 +23,18 @@ def fixtags_(t):
 def flattenbody(b, droplast=False):
     b = list(_flattenbody(b))
     if not droplast:
-        if b:
-            if b[-1] == ('drop',): # return last expr, but not inside a for
-                b.pop()
-        else:
-            b.append(('nil',))
+        if b[-1] == ('drop',): # return last expr
+            b.pop()
     return b
 def _flattenbody(b):
+    statement = True
     for s in b:
         yield from s
-        if not isinstance(s, (Assign, ReturnValue)):
+        statement = isinstance(s, (Assign, ReturnValue))
+        if not statement:
             yield ('drop',)
+    if statement:
+        yield ('nil',)
 
 @ReturnValue._method
 def __iter__(self):
