@@ -119,6 +119,10 @@ class SType(dict):
         if item not in self:
             self[item] = Symbol(item)
         return self[item]
+    def __missing__(self, item):
+        self[item] = Symbol(item)
+        return self[item]
+
 S = SType()
 
 class Table(dict):
