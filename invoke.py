@@ -93,7 +93,8 @@ class Scope:
     def __init__(self, body, pc, env):
         self.body = body
         self.pc = pc
-        self.env = Table(env)
+        assert(isinstance(env, Table))
+        self.env = env
     def __repr__(self):
         return 'Scope(body={body}, pc={pc}, env={env})'.format_map(self.__dict__)
 
