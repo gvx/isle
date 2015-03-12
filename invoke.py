@@ -24,17 +24,24 @@ class Nothing:
         return 'Nothing'
 Nothing = Nothing()
 
-def callfunc(func, arg, stack, callstack, allowvalue=False):
+def callfunc(func, arg, stack, callstack, allowvalue=False, tablesseen=None):
     if callable(func):
         ret = func(stack=stack, callstack=callstack, arg=arg)
         if ret is not Nothing:
             stack.append(ret)
     elif isinstance(func, Func):
         callstack.append(Scope(func, 0, arg))
+    elif isinstance(func, Table) and S['()'] in func:
+        if tablesseen is None:
+            tablesseen = set()
+        if func in tablesseen:
+            raise Exception("recursive :'()' method")
+        tablesseen.add(func)
+        callfunc(func[S['()']], arg, stack, callstack, allowvalue=allowvalue, tablesseen=tablesseen)
     elif allowvalue:
         stack.append(func)
     else:
-        raise Exception("cannot call this value")
+        raise Exception("cannot call a {} value".format(type(func)))
 
 
 class ISLRepr(reprlib.Repr):
