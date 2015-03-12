@@ -28,15 +28,15 @@ def _iter_args(t):
         yield t[n]
         n += 1
 
+def next_item(stack, callstack, arg):
+    try:
+        return Table({S.func: next_item, 1: arg[1](stack, callstack, arg), S.arg: Table([(1, arg[1])])})
+    except StopIteration:
+        return None
 
 def isle_args(stack, callstack, arg):
     it = _iter_args(arg[1])
-    def nnext(stack, callstack, arg):
-        try:
-            return Table({S.func: nnext, 1: next(it), S.arg: None})
-        except StopIteration:
-            return None
-    return nnext(stack, callstack, arg)
+    return next_item(stack, callstack, arg={1:lambda s,c,a:next(it)})
 
 def isle_range(stack, callstack, arg):
     start = arg[S.start] if S.start in arg else arg[1] if 2 in arg else 1
