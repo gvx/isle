@@ -1,4 +1,5 @@
 from .named import namedtuple
+from .invoke import Symbol
 
 @namedtuple
 def ReturnValue(value):
@@ -72,11 +73,11 @@ def RegFrag(value):
 
 @namedtuple
 def Sym(value):
-    assert isinstance(value, str)
+    assert isinstance(value, Symbol)
 
 @namedtuple
 def Name(value):
-    assert isinstance(value, (str, int))
+    assert isinstance(value, (Symbol, int))
 
 @namedtuple
 def Int(value):

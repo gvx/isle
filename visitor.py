@@ -1,4 +1,5 @@
 from .ast import *
+from .invoke import S
 from itertools import count
 
 tagger = lambda x=count(): next(x)
@@ -34,7 +35,7 @@ def _flattenbody(b):
         if not statement:
             yield ('drop',)
     if statement:
-        yield ('nil',)
+        yield from Nil()
 
 @ReturnValue._method
 def __iter__(self):
@@ -49,7 +50,7 @@ def __iter__(self):
 def __iter__(self):
     start = tagger()
     end = tagger()
-    yield ('nil',)
+    yield from Nil()
     yield from self.iterable
     yield ('label', start)
     yield ('dup',)
@@ -61,9 +62,9 @@ def __iter__(self):
     yield from flattenbody(self.body)
     yield ('swap',)
     yield ('dup',)
-    yield ('get attr raw', 'arg')
+    yield ('get attr raw', S.arg)
     yield ('swap',)
-    yield ('get attr raw', 'func')
+    yield ('get attr raw', S.func)
     yield ('call',)
     yield ('jump', start)
     yield ('label', end)
@@ -91,7 +92,7 @@ def __iter__(self):
         yield from flattenbody(self.elsebody)
         yield ('label', end)
     else:
-        yield ('nil',)
+        yield from Nil()
 
 @BinOp._method
 def __iter__(self):
@@ -186,17 +187,17 @@ def __iter__(self):
         for v in self.value:
             if isinstance(v, RegFrag):
                 if v.value:
-                    yield ('string', v.value)
+                    yield ('lit', v.value)
             else:
                 yield from v
                 yield ('convert to string',)
         yield ('collect string',)
     else:
-        yield ('string', self.value[0].value)
+        yield ('lit', self.value[0].value)
 
 @Sym._method
 def __iter__(self):
-    yield ('symbol', self.value)
+    yield ('lit', self.value)
 
 @Name._method
 def __iter__(self):
@@ -215,8 +216,8 @@ def assignto(self, value=None, binop=None, unops=None):
 
 @Int._method
 def __iter__(self):
-    yield ('int', self.value)
+    yield ('lit', self.value)
 
 @Nil._method
 def __iter__(self):
-    yield ('nil',)
+    yield ('lit', None)

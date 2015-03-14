@@ -1,4 +1,4 @@
-from .invoke import astr, arepr, Func, Table, Symbol, Scope, Nothing, callfunc, S
+from .invoke import astr, arepr, Func, Table, Scope, Nothing, callfunc, S
 
 def isle_apply(stack, callstack, arg):
     assert isinstance(arg[2], Table)
@@ -49,5 +49,5 @@ def stdlib():
     lib = Table()
     for key, value in globals().items():
         if key.startswith('isle_'):
-            lib[Symbol(key[5:])] = value
+            lib[S[key[5:]]] = value
     return lib

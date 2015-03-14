@@ -1,17 +1,5 @@
 from .named import namedtuple
 
-#TODO: add stdlib
-#TODO: write parser
-
-#* (can this happen in parser? yes... can also easily be done in visitor)
-# now that i think of it, it might not... how do we store the closure itself?
-# do
-#    x = $-1
-#    do
-#        assert(x == $-2)
-#    end
-# end
-
 import operator as _o
 import reprlib
 from functools import wraps
@@ -113,18 +101,9 @@ def Func(body, closure=()):
 def Symbol(value):
     pass
 
-@Symbol._method
-def __eq__(self, other):
-    return isinstance(other, Symbol) and self.value == other.value
-
-@Symbol._method
-def __hash__(self):
-    return hash(self.value)
 
 class SType(dict):
     def __getattr__(self, item):
-        if item not in self:
-            self[item] = Symbol(item)
         return self[item]
     def __missing__(self, item):
         self[item] = Symbol(item)
@@ -195,7 +174,7 @@ def invoke(body, args):
                 right = stack.pop()
                 left = stack.pop()
                 if isinstance(left, dict):
-                    s = Symbol(opargs[0])
+                    s = S[opargs[0]]
                     if s in left:
                         callfunc(left[s], Table({1: right}), stack, callstack)
                     else:
@@ -205,7 +184,7 @@ def invoke(body, args):
             elif opcode == 'unop':
                 right = stack.pop()
                 if isinstance(right, dict):
-                    s = Symbol(opargs[0])
+                    s = S[opargs[0]]
                     if s in right:
                         callfunc(right[s], Table(), stack, callstack)
                     else:
@@ -238,37 +217,26 @@ def invoke(body, args):
                 value = stack.pop()
                 key = stack.pop()
                 coll = stack.pop()
-                #print('set index', key, coll, value)
                 coll[key] = value
             elif opcode == 'get attr':
                 coll = stack.pop()
                 attr = opargs[0]
-                if isinstance(attr, str):
-                    attr = Symbol(attr)
                 value = coll.get(attr)
                 callfunc(value, Table(), stack, callstack, allowvalue=True)
             elif opcode == 'set attr':
                 value = stack.pop()
                 attr = opargs[0]
-                if isinstance(attr, str):
-                    attr = Symbol(attr)
                 coll[attr] = value
             elif opcode == 'get attr raw':
                 coll = stack.pop()
                 attr = opargs[0]
-                if isinstance(attr, str):
-                    attr = Symbol(attr)
                 stack.append(coll.get(attr))
             elif opcode == 'set attr raw':
                 value = stack.pop()
                 attr = opargs[0]
-                if isinstance(attr, str):
-                    attr = Symbol(attr)
                 coll[attr] = value
             elif opcode == 'get name':
                 name = opargs[0]
-                if isinstance(name, str):
-                    name = Symbol(name)
                 if isinstance(name, int) and name <= 0:
                     if name == 0:
                         stack.append(sc.body)
@@ -290,9 +258,7 @@ def invoke(body, args):
             elif opcode == 'set name':
                 value = stack.pop()
                 name = opargs[0]
-                if isinstance(name, str):
-                    name = Symbol(name)
-                elif isinstance(name, int) and name <= 0:
+                if isinstance(name, int) and name <= 0:
                     raise Exception('cannot assign to $0 or $-n')
                 for env in sc.body.closure:
                     if name in env:
@@ -302,14 +268,8 @@ def invoke(body, args):
                     sc.env[name] = value
             elif opcode == 'new table':
                 stack.append(Table())
-            elif opcode == 'string':
+            elif opcode == 'lit':
                 stack.append(opargs[0])
-            elif opcode == 'symbol':
-                stack.append(Symbol(opargs[0]))
-            elif opcode == 'int':
-                stack.append(opargs[0])
-            elif opcode == 'nil':
-                stack.append(None)
             elif opcode == 'convert to string':
                 stack.append(astr(stack.pop()))
             elif opcode == 'collect string':

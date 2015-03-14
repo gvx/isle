@@ -1,4 +1,5 @@
 from . import ast
+from .invoke import S, Symbol
 from pyparsing import *
 
 __all__ = ['parse']
@@ -13,6 +14,8 @@ isle_keywords = { "if", "elsif", "else", "return", "end", "do", "for", "in" }
 def rejectKeywords(string,loc,tokens):
     if tokens[0] in isle_keywords:
         raise ParseException(string,loc,"found keyword %s" % tokens[0])
+    if isinstance(tokens[0], str):
+        tokens[0] = S[tokens[0]]
     return ast.Name(tokens[0])
 
 Name = Word(srange('[a-zA-Z_]'), srange('[a-zA-Z_0-9]')) | (Suppress("'") + CharsNotIn("'") + Suppress("'")) | ('$' + NumLit).setParseAction(lambda t: t[1].value)
@@ -48,7 +51,7 @@ def parse_if(l):
     return ast.If(l[1], l[2], parse_if(l[3:]))
 IfExp.setParseAction(if_parse)
 
-NameOrIndex = Name.copy().setParseAction(lambda s,l,t: (rejectKeywords(s,l,t), ast.Sym(t[0]) if isinstance(t[0], str) else ast.Int(t[0]))[1]) | Suppress("[") + Exp + Suppress("]")
+NameOrIndex = Name.copy().setParseAction(lambda s,l,t: (rejectKeywords(s,l,t), ast.Sym(t[0]) if isinstance(t[0], Symbol) else ast.Int(t[0]))[1]) | Suppress("[") + Exp + Suppress("]")
 
 TableLitOrParens = Suppress("(") + Optional(delimitedList(Optional(NameOrIndex + "=") + Exp, ",") + Optional(",")) + Suppress(")")
 def makeTable(tokens):
