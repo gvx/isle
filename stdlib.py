@@ -1,4 +1,6 @@
 from .invoke import astr, arepr, Func, Table, Scope, Nothing, callfunc, S
+from .visitor import fixtags, flattenbody
+from .parse import parse
 
 def isle_apply(stack, callstack, arg):
     assert isinstance(arg[2], Table)
@@ -44,6 +46,11 @@ def isle_range(stack, callstack, arg):
     step = arg.get(S.step, 1)
     if start <= stop:
         return Table({S.func: isle_range, 1: start, S.arg: Table({S.start: start + step, S.step: step, S.stop: stop})})
+
+def isle_require(stack, callstack, arg):
+    env = stdlib()
+    callstack.append(Scope(Func(fixtags(flattenbody(parse(arg[1]), droplast=True))), 0, env))
+    return env
 
 def stdlib():
     lib = Table()
