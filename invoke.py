@@ -228,6 +228,7 @@ def invoke(body, args):
                 callfunc(value, Table(), stack, callstack, allowvalue=True)
             elif opcode == 'set attr':
                 value = stack.pop()
+                coll = stack.pop()
                 attr = opargs[0]
                 coll[attr] = value
             elif opcode == 'get attr raw':
@@ -236,6 +237,7 @@ def invoke(body, args):
                 stack.append(coll.get(attr))
             elif opcode == 'set attr raw':
                 value = stack.pop()
+                coll = stack.pop()
                 attr = opargs[0]
                 coll[attr] = value
             elif opcode == 'get name':
