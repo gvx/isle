@@ -49,8 +49,9 @@ def isle_range(stack, callstack, arg):
 
 def isle_require(stack, callstack, arg):
     env = stdlib()
-    callstack.append(Scope(Func(fixtags(flattenbody(parse(arg[1]), droplast=True))), 0, env))
-    return env
+    useenv = arg.get(S.useret) is None
+    callstack.append(Scope(Func(fixtags(flattenbody(parse(arg[1]), droplast=useenv))), 0, env))
+    return env if useenv else Nothing
 
 def stdlib():
     lib = Table()
