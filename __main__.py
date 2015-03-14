@@ -1,5 +1,7 @@
 from . import *
 
+import readline
+
 ps1 = '\n% '
 ps2 = '| '
 try:
