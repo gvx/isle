@@ -97,17 +97,20 @@ class Scope:
 def Func(body, closure=()):
     pass
 
-@namedtuple
-def Symbol(value):
-    pass
-
+class Symbol:
+    __slots__ = ('value',)
+    def __new__(cls, value):
+        return S[value]
+    def __repr__(self):
+        return 'Symbol(value={!r})'.format(self.value)
 
 class SType(dict):
     def __getattr__(self, item):
         return self[item]
     def __missing__(self, item):
-        self[item] = Symbol(item)
-        return self[item]
+        v = self[item] = object.__new__(Symbol)
+        v.value = item
+        return v
 
 S = SType()
 

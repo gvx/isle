@@ -15,7 +15,7 @@ def rejectKeywords(string,loc,tokens):
     if tokens[0] in isle_keywords:
         raise ParseException(string,loc,"found keyword %s" % tokens[0])
     if isinstance(tokens[0], str):
-        tokens[0] = S[tokens[0]]
+        tokens[0] = Symbol(tokens[0])
     return ast.Name(tokens[0])
 
 Name = Word(srange('[a-zA-Z_]'), srange('[a-zA-Z_0-9]')) | (Suppress("'") + CharsNotIn("'") + Suppress("'")) | ('$' + NumLit).setParseAction(lambda t: t[1].value)
