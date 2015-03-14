@@ -1,6 +1,6 @@
 from .invoke import astr, arepr, Func, Table, Scope, Nothing, callfunc, S
 from .visitor import fixtags, flattenbody
-from .parse import parse
+from .parse import parseFile
 
 def isle_apply(stack, callstack, arg):
     assert isinstance(arg[2], Table)
@@ -50,7 +50,7 @@ def isle_range(stack, callstack, arg):
 def isle_require(stack, callstack, arg):
     env = stdlib()
     useenv = arg.get(S.useret) is None
-    callstack.append(Scope(Func(fixtags(flattenbody(parse(arg[1]), droplast=useenv))), 0, env))
+    callstack.append(Scope(Func(fixtags(flattenbody(parseFile(arg[1]), droplast=useenv))), 0, env))
     return env if useenv else Nothing
 
 def stdlib():

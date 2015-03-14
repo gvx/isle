@@ -285,5 +285,7 @@ def invoke(body, args):
             else:
                 raise Exception('unknown opcode', opcode)
             sc.pc += 1
+        return stack
     except Exception as e:
         traceback.print_exc()
+        return None,

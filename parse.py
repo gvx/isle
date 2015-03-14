@@ -2,7 +2,7 @@ from . import ast
 from .invoke import S, Symbol
 from pyparsing import *
 
-__all__ = ['parse']
+__all__ = ['parseFile', 'parseString']
 
 ParserElement.setDefaultWhitespaceChars(' \t\r')
 NameExp = Forward()
@@ -148,5 +148,8 @@ CmpExp = (AddExp + ZeroOrMore(oneOf('== != < > >= <=') + AddExp)).setParseAction
 AndExp = (CmpExp + ZeroOrMore((Regex(r'&[&|!%<=>+*/\^-]*[&|!%<>+*/\^-]') | Literal("&")) + CmpExp)).setParseAction(binopparse_l)
 Exp << (AndExp + ZeroOrMore((Regex(r'\|[&|!%<=>+*/\^-]*[&|!%<>+*/\^-]') | Literal("|")) + AndExp)).setParseAction(binopparse_l)
 
-def parse(fname):
+def parseFile(fname):
     return Program.parseFile(fname, True)
+
+def parseString(source):
+    return Program.parseString(source, True)
