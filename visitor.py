@@ -84,15 +84,14 @@ def __iter__(self):
     tag = tagger()
     yield ('jump if nil', tag)
     yield from flattenbody(self.thenbody)
-    if self.elsebody is not None:
-        end = tagger()
-        yield ('jump', end)
+    end = tagger()
+    yield ('jump', end)
     yield ('label', tag)
-    if self.elsebody is not None:
-        yield from flattenbody(self.elsebody)
-        yield ('label', end)
-    else:
+    if self.elsebody is None:
         yield from Nil()
+    else:
+        yield from flattenbody(self.elsebody)
+    yield ('label', end)
 
 @BinOp._method
 def __iter__(self):
