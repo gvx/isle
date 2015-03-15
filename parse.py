@@ -29,18 +29,22 @@ Return = Keyword("return") + Optional(Exp)
 Return.setParseAction(lambda t: ast.ReturnValue(t[1]) if len(t) == 2 else ast.Return())
 Stmt = Assign | Return | Exp
 
-Stmts = Optional(delimitedList(Suppress(ZeroOrMore('\n')) + (Optional(Stmt) + Suppress("#" + restOfLine) | Stmt), '\n'))
-Program = Suppress(ZeroOrMore('\n')) + Stmts + Suppress(ZeroOrMore('\n'))
+NewLine = Regex(r'[\n;]')
+NL = Suppress(OneOrMore(NewLine))
+OptNL = Optional(NL)
+
+Stmts = Optional(delimitedList(OptNL + (Optional(Stmt) + Suppress("#" + restOfLine) | Stmt), NewLine))
+Program = Stmts + OptNL
 FuncDef = Suppress(Keyword("do")) + Program + Suppress(Keyword("end"))
 FuncDef.setParseAction(lambda t: ast.Do(t.asList()))
 
-Body = Suppress(OneOrMore('\n')) + Stmts + Suppress(OneOrMore('\n'))
+Body = Stmts + OptNL
 Body.setParseAction(lambda t: [t.asList()])
 
-ForLoop = Keyword("for") + delimitedList(Name).setParseAction(lambda t:[[x.value for x in t.asList()]]) + Keyword("in") + Exp + Body + Keyword("end")
+ForLoop = Keyword("for") + delimitedList(Name).setParseAction(lambda t:[[x.value for x in t.asList()]]) + Keyword("in") + Exp + NL + Body + Keyword("end")
 ForLoop.setParseAction(lambda t: ast.For(t[1], t[3], t[4]))
 
-IfExp = Keyword("if") + Exp + Body + ZeroOrMore(Keyword("elsif") + Exp + Body) + Optional(Keyword("else") + Body) + Keyword('end')
+IfExp = Keyword("if") + Exp + NL + Body + ZeroOrMore(Keyword("elsif") + Exp + NL + Body) + Optional(Keyword("else") + Body) + Keyword('end')
 def if_parse(t):
     return parse_if(t.asList())
 def parse_if(l):
