@@ -29,7 +29,7 @@ Return = Keyword("return") + Optional(Exp)
 Return.setParseAction(lambda t: ast.ReturnValue(t[1]) if len(t) == 2 else ast.Return())
 Stmt = Assign | Return | Exp
 
-Stmts = Optional(delimitedList(Suppress(ZeroOrMore('\n')) + (Suppress(Optional(Stmt) + "#" + restOfLine) | Stmt), '\n'))
+Stmts = Optional(delimitedList(Suppress(ZeroOrMore('\n')) + (Optional(Stmt) + Suppress("#" + restOfLine) | Stmt), '\n'))
 Program = Suppress(ZeroOrMore('\n')) + Stmts + Suppress(ZeroOrMore('\n'))
 FuncDef = Suppress(Keyword("do")) + Program + Suppress(Keyword("end"))
 FuncDef.setParseAction(lambda t: ast.Do(t.asList()))
