@@ -41,8 +41,8 @@ FuncDef.setParseAction(lambda t: ast.Do(t.asList()))
 Body = Stmts + OptNL
 Body.setParseAction(lambda t: [t.asList()])
 
-ForLoop = Keyword("for") + delimitedList(Name).setParseAction(lambda t:[[x.value for x in t.asList()]]) + Keyword("in") + Exp + Body + Keyword("end")
-ForLoop.setParseAction(lambda t: ast.For(t[1], t[3], t[4]))
+ForLoop = Suppress(Keyword("for")) + (delimitedList(Name).setParseAction(lambda t:[[x.value for x in t.asList()]]) + Suppress(Keyword("in")) | Empty().setParseAction(lambda t: [[]])) + Exp + Body + Suppress(Keyword("end"))
+ForLoop.setParseAction(lambda t: ast.For(t[0], t[1], t[2]))
 
 IfExp = Keyword("if") + Exp + Body + ZeroOrMore(Keyword("elsif") + Exp + Body) + Optional(Keyword("else") + Body) + Keyword('end')
 def if_parse(t):
