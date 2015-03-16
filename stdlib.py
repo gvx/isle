@@ -53,6 +53,18 @@ def isle_require(stack, callstack, arg):
     callstack.append(Scope(Func(fixtags(flattenbody(parseFile(arg[1]), droplast=useenv))), 0, env))
     return env if useenv else Nothing
 
+def isle_slice(stack, callstack, arg):
+    string = arg[1]
+    start = arg[2]
+    if start < 0:
+        start = len(string) + start + 1
+    end = arg.get(3, start)
+    if end < 0:
+        end = len(string) + end + 1
+    assert 1 <= start <= len(string)
+    assert start <= end <= len(string)
+    return string[start - 1:end]
+
 def stdlib():
     lib = Table()
     for key, value in globals().items():
