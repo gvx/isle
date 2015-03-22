@@ -31,11 +31,12 @@ def callfunc(func, arg, stack, callstack, allowvalue=False, tablesseen=None):
     else:
         raise Exception("cannot call a {} value".format(type(func)))
 
+isle_keywords = { "if", "elsif", "else", "return", "end", "do", "for", "in" }
 
 class ISLRepr(reprlib.Repr):
     def repr_Symbol(self, obj, level):
         import re
-        if re.match('^[a-zA-Z_][a-zA-Z_0-9]*$', obj.value):
+        if obj.value not in isle_keywords and re.match('^[a-zA-Z_][a-zA-Z_0-9]*$', obj.value):
             return ':' + obj.value
         else:
             return ":'{}'".format(obj.value)

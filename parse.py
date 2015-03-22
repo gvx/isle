@@ -1,5 +1,5 @@
 from . import ast
-from .invoke import S, Symbol
+from .invoke import S, Symbol, isle_keywords
 from pyparsing import *
 
 __all__ = ['parseFile', 'parseString']
@@ -10,16 +10,16 @@ Exp = Forward()
 
 NumLit = Word(nums + '-', nums).setParseAction(lambda t: ast.Int(int(t[0])))
 
-isle_keywords = { "if", "elsif", "else", "return", "end", "do", "for", "in" }
 def rejectKeywords(string,loc,tokens):
     if tokens[0] in isle_keywords:
         raise ParseException(string,loc,"found keyword %s" % tokens[0])
+def nameParseAction(string,loc,tokens):
     if isinstance(tokens[0], str):
         tokens[0] = Symbol(tokens[0])
     return ast.Name(tokens[0])
 
-Name = Word(srange('[a-zA-Z_]'), srange('[a-zA-Z_0-9]')) | (Suppress("'") + CharsNotIn("'") + Suppress("'")) | ('$' + NumLit).setParseAction(lambda t: t[1].value)
-Name.setParseAction( rejectKeywords )
+Name = Word(srange('[a-zA-Z_]'), srange('[a-zA-Z_0-9]')).setParseAction( rejectKeywords ) | (Suppress("'") + CharsNotIn("'") + Suppress("'")) | ('$' + NumLit).setParseAction(lambda t: t[1].value)
+Name.setParseAction(nameParseAction)
 
 Assigner = Regex(r'(?:[&|!%<=>+*/\^-]*[&|!%<>+*/\^-])?=')
 Assign = NameExp + Assigner + Exp
