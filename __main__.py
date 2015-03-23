@@ -14,7 +14,7 @@ except ImportError:
         pass
 
 def getfilefunc(mod, droplast=True):
-    return Func(tuple(fixtags(flattenbody(mod, droplast=droplast))))
+    return Func(fixtags(flattenbody(mod, droplast=droplast)))
 
 def runfile(fname):
     invoke(getfilefunc(parseFile(fname)), stdlib())

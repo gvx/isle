@@ -96,7 +96,9 @@ class Scope:
 
 @namedtuple
 def Func(body, closure=()):
-    pass
+    # ensure Func is hashable
+    hash(body)
+    hash(closure)
 
 class Symbol:
     __slots__ = ('value',)
@@ -163,7 +165,7 @@ def invoke(body, args):
             opcode, *opargs = sc.body.body[sc.pc]
 
             if opcode == 'lambda':
-                stack.append(Func(body=tuple(opargs[0]), closure=sc.body.closure + (sc.env,)))
+                stack.append(Func(body=opargs[0], closure=sc.body.closure + (sc.env,)))
             elif opcode == 'return':
                 callstack.pop()
                 continue

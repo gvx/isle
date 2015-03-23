@@ -5,7 +5,7 @@ from itertools import count
 tagger = lambda x=count(): next(x)
 
 def fixtags(t):
-    return list(fixtags_(t))
+    return tuple(fixtags_(t))
 def fixtags_(t):
     reg = {}
     i = 0
