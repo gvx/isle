@@ -7,8 +7,6 @@ ps2 = '| '
 try:
     from blessings import Terminal
     term = Terminal()
-    ps1 = term.bold_blue(ps1)
-    ps2 = term.bold_blue(ps2)
     def fancy_movement():
         print(term.move_up() + term.clear_eol() + term.move_up())
 except ImportError:
