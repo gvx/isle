@@ -27,6 +27,13 @@ def isle_assert_error(stack, callstack, arg):
     callstack.append(Scope(arg[1], 0, Table()))
     #something something error handling
 
+def isle_replace_closure(stack, callstack, arg):
+    assert(isinstance(arg[1], Func))
+    assert(isinstance(arg[2], Table))
+    new_closure = tuple(_iter_args(arg[2]))
+    for env in new_closure:
+        assert(isinstance(env, Table))
+    return Func(body=arg[1].body, closure=new_closure)
 
 def _iter_args(t):
     n = 1
