@@ -51,6 +51,11 @@ def isle_args(stack, callstack, arg):
     it = _iter_args(arg[1])
     return next_item(stack, callstack, arg={1:lambda s,c,a:next(it)})
 
+def isle_chars(stack, callstack, arg):
+    assert isinstance(arg[1], str)
+    it = iter(arg[1])
+    return next_item(stack, callstack, arg={1:lambda s,c,a:next(it)})
+
 def isle_range(stack, callstack, arg):
     start = arg[S.start] if S.start in arg else arg[1] if 2 in arg else 1
     stop = arg[S.stop] if S.stop in arg else arg[2] if 2 in arg else arg[1]
