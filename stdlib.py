@@ -1,6 +1,10 @@
 from .invoke import astr, arepr, Func, Table, Scope, Nothing, callfunc, S
 from .visitor import fixtags, flattenbody
 from .parse import parseFile
+from .serialize import serialize
+
+def isle_serialize(stack, callstack, arg):
+    return serialize(arg[1])
 
 def isle_apply(stack, callstack, arg):
     assert isinstance(arg[2], Table)
