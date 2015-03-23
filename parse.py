@@ -55,7 +55,7 @@ def parse_if(l):
     return ast.If(l[1], l[2], parse_if(l[3:]))
 IfExp.setParseAction(if_parse)
 
-NameOrIndex = Name.copy().setParseAction(lambda s,l,t: (rejectKeywords(s,l,t), ast.Sym(t[0]) if isinstance(t[0], Symbol) else ast.Int(t[0]))[1]) | Suppress("[") + Exp + Suppress("]")
+NameOrIndex = Name.copy().setParseAction(lambda s,l,t: (nameParseAction(s,l,t), ast.Sym(t[0]) if isinstance(t[0], Symbol) else ast.Int(t[0]))[1]) | Suppress("[") + Exp + Suppress("]")
 
 TableLitOrParens = Suppress("(") + Optional(delimitedList(Optional(NameOrIndex + "=" + ~Regex(r"[&|%<=>*/\^]")) + Exp, ",") + Optional(",")) + Suppress(")")
 def makeTable(tokens):
