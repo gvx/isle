@@ -50,7 +50,7 @@ def isle_range(stack, callstack, arg):
 def isle_require(stack, callstack, arg):
     env = stdlib()
     useenv = arg.get(S.useret) is None
-    callstack.append(Scope(Func(fixtags(flattenbody(parseFile(arg[1]), droplast=useenv))), 0, env))
+    callstack.append(Scope(Func(tuple(fixtags(flattenbody(parseFile(arg[1]), droplast=useenv))), 0, env)))
     return env if useenv else Nothing
 
 def isle_slice(stack, callstack, arg):
