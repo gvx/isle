@@ -23,9 +23,17 @@ def write_table_ex(t, memo, rev_memo, srefs, name):
     yield '$'
     yield str(name)
     if isinstance(t, Func):
-        yield ' = do '
+        yield ' = replace_closure(do '
         yield '...' #oh dear
-        yield ' end'
+        yield ' end, ('
+        i = -1
+        for i, env in enumerate(t.closure):
+            if i:
+                yield ', '
+            yield write(env, memo, rev_memo)
+        if i == 0:
+            yield ','
+        yield '))'
         return
     yield ' = ('
     n = 1
