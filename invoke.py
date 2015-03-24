@@ -41,8 +41,20 @@ class ISLRepr(reprlib.Repr):
         else:
             return ":'{}'".format(obj.value)
     def repr_str(self, obj, level):
-        import json
-        return json.dumps(obj)
+        return ''.join(self._repr_str(obj))
+    def _repr_str(self, obj, escaped={'\n': 'n', '\t': 't', '"': '"', '\\': '\\', '\r': 'r'}):
+        yield '"'
+        for c in obj:
+            if c in escaped:
+                yield '\\'
+                yield escaped[c]
+            elif ord(c) < 32:
+                yield '\\'
+                yield hex(ord(c))[2:]
+                yield ';'
+            else:
+                yield c
+        yield '"'
     def repr_NoneType(self, obj, level):
         return 'nil'
     def repr_Func(self, obj, level):
