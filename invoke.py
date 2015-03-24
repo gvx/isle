@@ -58,7 +58,7 @@ class ISLRepr(reprlib.Repr):
         while n in obj:
             if n > 1:
                 yield ', '
-            yield ISLRepr.repr1(self, obj[n], level - 1)
+            yield self.repr1(obj[n], level - 1)
             n += 1
         kw_found = False
         for key, value in obj.items():
@@ -67,20 +67,22 @@ class ISLRepr(reprlib.Repr):
                     yield ', '
                 kw_found = True
                 if isinstance(key, Symbol):
-                    yield ISLRepr.repr1(self, key, level - 1)[1:]
+                    yield self.repr1(key, level - 1)[1:]
                 else:
                     yield '['
-                    yield ISLRepr.repr1(self, key, level - 1)
+                    yield self.repr1(key, level - 1)
                     yield ']'
                 yield '='
-                yield ISLRepr.repr1(self, value, level - 1)
+                yield self.repr1(value, level - 1)
         if n == 2 and not kw_found:
             yield ','
         yield ')'
 
 class ISLStr(ISLRepr):
     def repr_str(self, obj, level):
-        return obj
+        if level == self.maxlevel:
+            return obj
+        return super().repr_str(obj, level)
 
 arepr = ISLRepr().repr
 astr = ISLStr().repr
