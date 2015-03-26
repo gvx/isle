@@ -12,6 +12,9 @@ class Nothing:
         return 'Nothing'
 Nothing = Nothing()
 
+class CallException(Exception):
+    pass
+
 def callfunc(func, arg, stack, callstack, allowvalue=False, tablesseen=None):
     if callable(func):
         ret = func(stack=stack, callstack=callstack, arg=arg)
@@ -29,7 +32,7 @@ def callfunc(func, arg, stack, callstack, allowvalue=False, tablesseen=None):
     elif allowvalue:
         stack.append(func)
     else:
-        raise Exception("cannot call a {} value".format(type(func)))
+        raise CallException("cannot call a {} value".format('nil' if func is None else type(func)))
 
 isle_keywords = { "if", "elsif", "else", "return", "end", "do", "for", "in" }
 
@@ -247,7 +250,12 @@ def invoke(body, args):
                 value = stack.pop()
                 coll = stack.pop()
                 attr = opargs[0]
-                coll[attr] = value
+                try:
+                    callstack.append(Scope(Func((('drop',),), ()), 0, Table()))
+                    callfunc(coll.get(attr), Table({S.setter: S.t, 1: value}), stack, callstack)
+                except CallException:
+                    coll[attr] = value
+                    callstack.pop()
             elif opcode == 'get attr raw':
                 coll = stack.pop()
                 attr = opargs[0]
