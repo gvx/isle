@@ -108,6 +108,8 @@ class Scope:
         self.pc = pc
         assert(isinstance(env, Table))
         self.env = env
+    def __hash__(self):
+        return id(self)
     def __repr__(self):
         return 'Scope(body={body}, pc={pc}, env={env})'.format_map(self.__dict__)
 
