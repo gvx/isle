@@ -18,7 +18,8 @@ def nameParseAction(string,loc,tokens):
         tokens[0] = Symbol(tokens[0])
     return ast.Name(tokens[0])
 
-Name = Word(srange('[a-zA-Z_]'), srange('[a-zA-Z_0-9]')).setParseAction( rejectKeywords ) | (Suppress("'") + CharsNotIn("'") + Suppress("'")) | ('$' + NumLit).setParseAction(lambda t: t[1].value)
+SymName = Word(srange('[a-zA-Z_]'), srange('[a-zA-Z_0-9]')).setParseAction( rejectKeywords ) | (Suppress("'") + CharsNotIn("'") + Suppress("'"))
+Name = SymName | ('$' + NumLit).setParseAction(lambda t: t[1].value)
 Name.setParseAction(nameParseAction)
 
 Assigner = Regex(r'(?:[&|!%<=>+*/\^-]*[&|!%<>+*/\^-])?=')
@@ -57,7 +58,10 @@ IfExp.setParseAction(if_parse)
 
 NameOrIndex = Name.copy().setParseAction(lambda s,l,t: (nameParseAction(s,l,t), ast.Sym(t[0]) if isinstance(t[0], Symbol) else ast.Int(t[0]))[1]) | Suppress("[") + Exp + Suppress("]")
 
-TableLitOrParens = Suppress("(") + Optional(delimitedList(Optional(NameOrIndex + "=" + ~Regex(r"[&|%<=>*/\^]")) + Exp, ",") + Optional(",")) + Suppress(")")
+def _makeflag(s):
+    return [s, "=", s]
+FlagParam = (SymName + "=" + ~Regex(r"[&|%<=>*/\^]")).setParseAction(lambda s,l,t: _makeflag(ast.Sym(Symbol(t[0]))))
+TableLitOrParens = Suppress("(") + Optional(delimitedList((Optional(NameOrIndex + "=" + ~Regex(r"[&|%<=>*/\^]")) + Exp | FlagParam), ",") + Optional(",")) + Suppress(")")
 def makeTable(tokens):
     if len(tokens) == 1: return tokens[0]
     v = []

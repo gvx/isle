@@ -83,6 +83,9 @@ class ISLRepr(reprlib.Repr):
                 kw_found = True
                 if isinstance(key, Symbol):
                     yield self.repr1(key, level - 1)[1:]
+                    if key is value:
+                        yield '='
+                        continue
                 else:
                     yield '['
                     yield self.repr1(key, level - 1)
@@ -254,7 +257,7 @@ def invoke(body, args):
                 attr = opargs[0]
                 try:
                     callstack.append(Scope(Func((('drop',),), ()), 0, Table()))
-                    callfunc(coll.get(attr), Table({S.setter: S.t, 1: value}), stack, callstack)
+                    callfunc(coll.get(attr), Table({S.setter: S.setter, 1: value}), stack, callstack)
                 except CallException:
                     coll[attr] = value
                     callstack.pop()
