@@ -272,13 +272,15 @@ def invoke(body, args):
                 coll[attr] = value
             elif opcode == 'get name':
                 name = opargs[0]
-                if isinstance(name, int) and name <= 0:
+                if isinstance(name, int):
                     if name == 0:
                         stack.append(sc.body)
                     elif name == -1:
                         stack.append(sc.env)
-                    else:
+                    elif name <= -2:
                         stack.append(sc.body.closure[name + 1])
+                    else:
+                        stack.append(sc.env.get(name))
                 else:
                     if name in sc.env:
                         v = sc.env[name]
@@ -293,14 +295,17 @@ def invoke(body, args):
             elif opcode == 'set name':
                 value = stack.pop()
                 name = opargs[0]
-                if isinstance(name, int) and name <= 0:
-                    raise Exception('cannot assign to $0 or $-n')
-                for env in sc.body.closure:
-                    if name in env:
-                        env[name] = value
-                        break
-                else:
+                if isinstance(name, int):
+                    if name <= 0:
+                        raise Exception('cannot assign to $0 or $-n')
                     sc.env[name] = value
+                else:
+                    for env in sc.body.closure:
+                        if name in env:
+                            env[name] = value
+                            break
+                    else:
+                        sc.env[name] = value
             elif opcode == 'new table':
                 stack.append(Table())
             elif opcode == 'lit':
