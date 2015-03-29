@@ -299,6 +299,8 @@ def invoke(body, args):
                     if name <= 0:
                         raise Exception('cannot assign to $0 or $-n')
                     sc.env[name] = value
+                elif name in sc.env:
+                    sc.env[name] = value
                 else:
                     for env in sc.body.closure:
                         if name in env:
