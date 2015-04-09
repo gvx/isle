@@ -45,7 +45,7 @@ class ISLRepr(reprlib.Repr):
             return ":'{}'".format(obj.value)
     def repr_str(self, obj, level):
         return ''.join(self._repr_str(obj))
-    def _repr_str(self, obj, escaped={'\n': 'n', '\t': 't', '"': '"', '\\': '\\', '\r': 'r'}):
+    def _repr_str(self, obj, escaped={'\n': 'n', '\t': 't', '"': '"', '\\': '\\', '\r': 'r', '{': '{', '}': '}'}):
         yield '"'
         for c in obj:
             if c in escaped:
