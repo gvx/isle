@@ -91,7 +91,7 @@ Special = (Regex(r'\\[\\"{}nrt]').setParseAction(lambda t: ast.RegFrag(escape_ch
 
 #SpecialNL = Special #r"\\[\\"{}nrt]" | r"\\[0-9a-fA-F]{1,6};" | "{" + Optional("\n") + Stmts + Optional("\n") + "}"
 
-HereDoc = Regex(r"<<<([^\n]+)\n(?P<text>(?:[^\n]*\n)*?)\1>>>").setParseAction(lambda t: ast.RegFrag(t['text']))
+HereDoc = Regex(r"<<<([^\n]*)\n(?P<text>(?:[^\n]*\n)*?)\1>>>").setParseAction(lambda t: ast.RegFrag(t['text']))
 
 StrContent = Regex(r'[^{}"\n\\]*').setParseAction(lambda t: ast.RegFrag(t[0]))
 StrContentNL = Regex(r'[^{}"\\]*').setParseAction(lambda t: ast.RegFrag(t[0]))
