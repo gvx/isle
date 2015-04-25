@@ -101,8 +101,8 @@ HereDoc = Regex(r"<<<([^\n]*)\n(?P<text>(?:[^\n]*\n)*?)\1>>>").setParseAction(la
 StrContent = Regex(r'[^{}"\n\\]*').setParseAction(lambda t: ast.RegFrag(t[0]))
 StrContentNL = Regex(r'[^{}"\\]*').setParseAction(lambda t: ast.RegFrag(t[0]))
 
-StrLit = (Suppress('"""') + StrContentNL + ZeroOrMore(Special + StrContentNL) + Suppress('"""')
-    | Suppress('"') + StrContent + ZeroOrMore(Special + StrContent) + Suppress('"')
+StrLit = (Suppress('"""') + StrContentNL.setWhitespaceChars('') + ZeroOrMore(Special + StrContentNL.setWhitespaceChars('')) + Suppress('"""')
+    | Suppress('"') + StrContent.setWhitespaceChars('') + ZeroOrMore(Special + StrContent.setWhitespaceChars('')) + Suppress('"')
     | HereDoc).setParseAction(lambda t: ast.StrLit(t.asList()))
 
 SymLit = (":" + Name).setParseAction(lambda t: ast.Sym(t[1].value))
