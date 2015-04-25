@@ -1,4 +1,6 @@
 from .invoke import arepr, Func, Table, Symbol
+from .read_bytecode import make_intermediate_nodes, build_ast
+from .rev_visitor import ast_to_source
 
 def write(t, memo, rev_memo):
     if isinstance(t, (Table, Func)):
@@ -23,9 +25,9 @@ def write_table_ex(t, memo, rev_memo, srefs, name):
     yield '$'
     yield str(name)
     if isinstance(t, Func):
-        yield ' = replace_closure(do '
-        yield '...' #oh dear
-        yield ' end, ('
+        yield ' = replace_closure('
+        yield ast_to_source(build_ast(make_intermediate_nodes([('lambda', t.body)]))).strip()
+        yield ', ('
         i = -1
         for i, env in enumerate(t.closure):
             if i:
