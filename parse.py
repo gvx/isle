@@ -63,7 +63,6 @@ def _makeflag(s):
 FlagParam = (SymName + "=" + ~Regex(r"[&|%<=>*/\^]")).setParseAction(lambda s,l,t: _makeflag(ast.Sym(Symbol(t[0]))))
 TableLitOrParens = Suppress("(") + Optional(delimitedList((Optional(NameOrIndex + "=" + ~Regex(r"[&|%<=>*/\^]")) + Exp | FlagParam), ",") + Optional(",")) + Suppress(")")
 def makeTable(tokens):
-    if len(tokens) == 1: return tokens[0]
     v = []
     n = 1
     while tokens:
@@ -81,7 +80,13 @@ def makeTable(tokens):
         n += 1
 
     return ast.TableLit(v)
-TableLitOrParens.setParseAction(makeTable)
+
+def maybeMakeTable(tokens):
+    if len(tokens) == 1: return tokens[0]
+    return makeTable(tokens)
+
+TableLitOrParens.setParseAction(maybeMakeTable)
+TableLit = TableLitOrParens.copy().setParseAction(makeTable)
 
 escape_chars = {'\\n': '\n', '\\r': '\r', '\\t': '\t'}
 
@@ -105,7 +110,7 @@ SymLit = (":" + Name).setParseAction(lambda t: ast.Sym(t[1].value))
 Nil = Keyword("nil").setParseAction(lambda t: ast.Nil())
 
 TermExp =  (Nil | SymLit | StrLit | NumLit | TableLitOrParens | FuncDef | ForLoop | IfExp | Name)
-NameExp << (TermExp + ZeroOrMore("[" + Exp + Suppress("]") | "." + Name | ".@" + Name | TableLitOrParens))
+NameExp << (TermExp + ZeroOrMore("[" + Exp + Suppress("]") | "." + Name | ".@" + Name | TableLit))
 nameexpast = {'[': ast.Index, '.': ast.Attr, '.@': ast.AttrGet}
 def parsenameexp(t):
     i = 1
