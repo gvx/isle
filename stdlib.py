@@ -64,9 +64,9 @@ def isle_range(stack, callstack, arg):
         return Table({S.func: isle_range, 1: start, S.arg: Table({S.start: start + step, S.step: step, S.stop: stop})})
 
 def isle_require(stack, callstack, arg):
-    env = stdlib()
+    env = Table()
     useenv = arg.get(S.useret) is None
-    callstack.append(Scope(Func(fixtags(flattenbody(parseFile(arg[1]), droplast=useenv)), 0, env)))
+    callstack.append(Scope(Func(fixtags(flattenbody(parseFile(arg[1]), droplast=useenv)), ()), 0, env))
     return env if useenv else Nothing
 
 def isle_slice(stack, callstack, arg):
@@ -87,3 +87,5 @@ def stdlib():
         if key.startswith('isle_'):
             lib[S[key[5:]]] = value
     return lib
+
+stdlib = stdlib()

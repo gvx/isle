@@ -290,7 +290,8 @@ def invoke(body, args):
                                 v = env[name]
                                 break
                         else:
-                            v = None
+                            from .stdlib import stdlib
+                            v = stdlib.get(name)
                     stack.append(v)
             elif opcode == 'set name':
                 value = stack.pop()

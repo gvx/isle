@@ -17,7 +17,7 @@ def getfilefunc(mod, droplast=True):
     return Func(fixtags(flattenbody(mod, droplast=droplast)))
 
 def runfile(fname):
-    invoke(getfilefunc(parseFile(fname)), stdlib())
+    invoke(getfilefunc(parseFile(fname)), Table())
 
 def readProgram():
     try:
@@ -33,7 +33,7 @@ def readProgram():
         raise SystemExit
 
 def interactive():
-    env = stdlib()
+    env = Table()
     while True:
         try:
             retval, = invoke(getfilefunc(parseString('\n'.join(readProgram())), droplast=False), env)
