@@ -160,6 +160,9 @@ def to_source(self, indentation, strength, funcarg=False):
             nonintkey = True
             if isinstance(key, Sym):
                 yield arepr(key.value)[1:]
+                if isinstance(value, Sym) and key.value is value.value:
+                    yield '='
+                    continue
             else:
                 yield '['
                 yield from key.to_source(indentation, 0)

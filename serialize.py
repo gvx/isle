@@ -59,6 +59,9 @@ def write_table_ex(t, memo, rev_memo, srefs, name):
             kw_found = True
             if isinstance(key, Symbol):
                 yield arepr(key)[1:]
+                if key is value:
+                    yield '='
+                    continue
             else:
                 yield '['
                 yield write(key, memo, rev_memo)
