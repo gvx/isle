@@ -1,9 +1,6 @@
 from .ast import *
 from .invoke import arepr
 
-# TODO:
-# from bytecode to AST???
-
 __all__ = ['ast_to_source']
 
 BINOP_STRENGTH = {'|': 1, '&': 2, '+': 4, '-': 4, '*': 5, '/': 5, '%': 6, '^': 8}
@@ -17,9 +14,7 @@ def binop_strength(op):
 def ast_to_source(t):
     return ''.join(to_source_body(t, 0, 0, end='', allowsingleline=False))
 
-def to_source_body(body, indentation, strength, do=False, end='end', allowsingleline=True):
-    if do:
-        yield 'do'
+def to_source_body(body, indentation, strength, end='end', allowsingleline=True):
     if len(body) < 2 and allowsingleline:
         if body:
             yield ' '
@@ -68,7 +63,8 @@ def to_source(self, indentation, strength):
 
 @Do._method
 def to_source(self, indentation, strength):
-    yield from to_source_body(self.body, indentation, strength, do=True)
+    yield 'do'
+    yield from to_source_body(self.body, indentation, strength)
 
 @If._method
 def to_source(self, indentation, strength):
