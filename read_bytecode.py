@@ -196,7 +196,7 @@ def build_ast(nodes):
             build_stack.append(For(namelist, it, build_ast(node.value)))
         elif node.kind == 'if':
             cond = build_stack.pop()
-            has_else = len(node.value[1]) == 1 and node.value[1][0].kind == 'bytecode' and node.value[1][0].value == ('nil',)
+            has_else = len(node.value[1]) > 1 or node.value[1][0].kind != 'bytecode' or node.value[1][0].value != ('lit', None)
             build_stack.append(If(cond, build_ast(node.value[0]), build_ast(node.value[1]) if has_else else None))
         else:
             assert not 'reachable'
