@@ -81,6 +81,12 @@ def isle_slice(stack, callstack, arg):
     assert start <= end <= len(string)
     return string[start - 1:end]
 
+def isle_delkey(stack, callstack, arg):
+    table = arg[1]
+    key = arg[2]
+    if key in table:
+        del table[key]
+
 def stdlib():
     lib = Table()
     for key, value in globals().items():
