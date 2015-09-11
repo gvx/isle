@@ -250,7 +250,7 @@ def invoke(body, args):
                 coll = stack.pop()
                 attr = opargs[0]
                 value = coll.get(attr)
-                callfunc(value, Table(), stack, callstack, allowvalue=True)
+                callfunc(value, Table({S.setter: None}), stack, callstack, allowvalue=True)
             elif opcode == 'set attr':
                 value = stack.pop()
                 coll = stack.pop()
