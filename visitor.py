@@ -179,6 +179,18 @@ def __iter__(self):
     for key, value in self.value:
         yield from Index(coll=[('dup',)], key=key).assignto(value)
 
+@TableLit._method
+def assignto(self, value=None, binop=None, unops=None):
+    assert not (binop or unops)
+    yield from value
+    for i, (k, v) in enumerate(self.value):
+        if i < len(self.value) - 1:
+            yield ('dup',)
+        yield from k
+        if isinstance(v, Sym):
+            v = Name(v.value)
+        yield from v.assignto([('get index',)])
+
 @StrLit._method
 def __iter__(self):
     if len(self.value) > 1:
