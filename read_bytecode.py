@@ -152,7 +152,6 @@ def build_ast(nodes):
             elif opc == 'call':
                 func = build_stack.pop()
                 arg = build_stack.pop()
-                print(node.originalindex)
                 build_stack.append(FuncCall(func, arg))
             elif opc == 'binop':
                 right = build_stack.pop()
@@ -200,6 +199,8 @@ def build_ast(nodes):
             build_stack.append(If(cond, build_ast(node.value[0]), build_ast(node.value[1]) if has_else else None))
         else:
             assert not 'reachable'
+    if len(build_stack) > 1 and isinstance(build_stack[-1], Nil) and isinstance(build_stack[-2], (Assign, ReturnValue)):
+        build_stack.pop()
     return build_stack
 
 # build exps backwards
