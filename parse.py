@@ -1,6 +1,7 @@
 from . import ast
 from .invoke import S, Symbol, isle_keywords
 from pyparsing import *
+ParserElement.enablePackrat()
 
 __all__ = ['parseFile', 'parseString']
 
