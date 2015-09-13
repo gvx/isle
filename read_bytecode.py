@@ -118,7 +118,16 @@ def build_ast(nodes):
             elif opc == 'get index':
                 index = build_stack.pop()
                 coll = build_stack.pop()
-                build_stack.append(Index(coll, index))
+                if isinstance(coll, Nodicle):
+                    if coll.name == 'dup':
+                        build_stack.append(Nodicle('destructuring', [index]))
+                    elif coll.name == 'destructuring':
+                        build_stack.append(coll)
+                        build_stack.append(Nodicle('destructuring tail', index))
+                    else:
+                        assert not 'reachable'
+                else:
+                    build_stack.append(Index(coll, index))
             elif opc == 'get attr':
                 build_stack.append(Attr(build_stack.pop(), c[1]))
             elif opc == 'get attr raw':
@@ -129,7 +138,23 @@ def build_ast(nodes):
                 value = build_stack.pop()
                 name = Name(c[1])
                 if isinstance(value, Nodicle):
-                    assert value.name == 'dup' and isinstance(build_stack[-1], UnOpS)
+                    if value.name == 'destructuring':
+                        if c[1] == value.value[0].value:
+                            name = Sym(c[1])
+                        value.value.append(name)
+                        build_stack.append(value)
+                    elif value.name == 'destructuring tail':
+                        if c[1] == value.value.value:
+                            name = Sym(c[1])
+                        items = [(value.value, name)]
+
+                        while isinstance(build_stack[-1], Nodicle) and build_stack[-1].name == 'destructuring':
+                            items.append(tuple(build_stack.pop().value))
+
+                        items.reverse()
+                        build_stack.append(Assign(TableLit(items), '=', build_stack.pop()))
+                    else:
+                        assert value.name == 'dup' and isinstance(build_stack[-1], UnOpS)
                 else:
                     build_stack.append(Assign(name, '=', value))
             elif opc == 'set index':
