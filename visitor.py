@@ -181,7 +181,7 @@ def __iter__(self):
 
 @TableLit._method
 def assignto(self, value=None, binop=None, unops=None):
-    assert not (binop or unops)
+    assert not (binop or unops) and self.value
     yield from value
     for i, (k, v) in enumerate(self.value):
         if i < len(self.value) - 1:
@@ -189,6 +189,7 @@ def assignto(self, value=None, binop=None, unops=None):
         yield from k
         if isinstance(v, Sym):
             v = Name(v.value)
+        assert isinstance(v, (Name, TableLit)), "can only destructure into names and tables"
         yield from v.assignto([('get index',)])
 
 @StrLit._method
