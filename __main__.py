@@ -8,7 +8,7 @@ try:
     from blessings import Terminal
     term = Terminal()
     def fancy_movement():
-        print(term.move_up() + term.clear_eol() + term.move_up())
+        print(term.move_up() + term.clear_eol(), end='')
 except ImportError:
     def fancy_movement():
         pass
