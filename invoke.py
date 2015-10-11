@@ -68,6 +68,9 @@ class ISLRepr(reprlib.Repr):
     def repr_Table(self, obj, level):
         return ''.join(self._repr_dict(obj, level))
     def _repr_dict(self, obj, level):
+        if level <= 0 and obj:
+            yield '(...)'
+            return
         yield '('
         n = 1
         while n in obj:
