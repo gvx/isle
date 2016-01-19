@@ -35,8 +35,15 @@ def isle_replace_closure(stack, callstack, arg):
         assert(isinstance(env, Table))
     return Func(body=arg[1].body, closure=new_closure)
 
-def _iter_args(t):
-    n = 1
+def isle_get_closure(stack, callstack, arg):
+    assert(isinstance(arg[1], Func))
+    closure = Table()
+    for i, v in enumerate(arg[1].closure):
+        closure[i + 1] = v
+    return closure
+
+def _iter_args(t, start=1):
+    n = start
     while n in t:
         yield t[n]
         n += 1
@@ -48,7 +55,7 @@ def next_item(stack, callstack, arg):
         return None
 
 def isle_args(stack, callstack, arg):
-    it = _iter_args(arg[1])
+    it = _iter_args(arg[1], start=arg.get(S.start, 1))
     return next_item(stack, callstack, arg={1:lambda s,c,a:next(it)})
 
 def isle_chars(stack, callstack, arg):
